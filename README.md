@@ -6,7 +6,7 @@ Declaring a TruthTable object.
 * TruthTable t = new TruthTable(String BOOLEAN_EXPRESSION, boolean EVALUATE_TRUTHS_FIRST)
 
 ### Input Characters (Can be Changed)
-| Operator | Input Symbol | Precedence (higher # = higher priority) |
+| Operator | Input Symbol | Precedence (Higher number = Higher priority) |
 | :----: | :----: | :----: |
 | NOT | ~ | 5 |
 | AND | & | 4 |
