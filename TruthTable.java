@@ -39,22 +39,8 @@ public class TruthTable {
 					break;
 				}
 				
-				String formatted = "";
-				
-				// Format input string by ignoring spaces.
-				for (int i = 0; i < input.length(); i++) {
-					char c = input.charAt(i);
-					if (c != ' ') {
-						formatted += c;
-					}
-				}
-				
-				TruthTable t = new TruthTable(formatted, true);
-				if (t.getIsValid()) {
-					t.print();
-				} else {
-					System.out.println("Error. Invalid expression.");
-				}
+				TruthTable t = new TruthTable(input, true);
+				t.print();
 			}
 		} finally {
 			System.out.println("Have a good day!");
@@ -63,19 +49,29 @@ public class TruthTable {
 		
 	}
 	
-	
-	
-	public TruthTable(String infix, boolean isTrueFirst) {
-		if (hasValidCharacters(infix)) {
-			toPostfix(infix);
+	public TruthTable(String input, boolean isTrueFirst) {
+		String formatted = formatString(input);
+		
+		if (hasValidCharacters(formatted)) {
+			toPostfix(formatted);
 			if (errorCheck()) {
 				evaluate(isTrueFirst);
 			}
 		}
 	}
+	
+	public ArrayList<Character> getVariables() {
+		return variables;
+	}
 
-	
-	
+	public ArrayList<String> getInValues() {
+		return inValues;
+	}
+
+	public ArrayList<Character> getOutValues() {
+		return outValues;
+	}
+
 	public String getInfix() {
 		return infix;
 	}
@@ -92,13 +88,17 @@ public class TruthTable {
 		if (isValid) {
 			// Header Information
 			for (int i = 0; i < variables.size(); i++) {
-				System.out.print(variables.get(i));
+				System.out.print(variables.get(i) + " ");
 			}
-			System.out.println(" | " + infix);
+			System.out.println("| " + infix);
 			
 			// NOTE: inValues.size() == outValues.size() 
 			for (int i = 0; i < inValues.size(); i++) {
-				System.out.println(inValues.get(i) + " | " + outValues.get(i));
+				String inputValues = inValues.get(i);
+				for (int j = 0; j < inputValues.length(); j++) {
+					System.out.print(inputValues.charAt(j) + " ");
+				}
+				System.out.println("| " + outValues.get(i));
 			}
 		} else {
 			System.out.println("Error. Invalid expression.");
@@ -122,7 +122,7 @@ public class TruthTable {
 		}
 	}
 	
-	private void getVariables() {
+	private void deterimineVariables() {
 		for (int i = 0; i < postfix.length(); i++) {
 			char c = postfix.charAt(i);
 			if (isVariable(c) && !variables.contains(c)) {
@@ -146,6 +146,20 @@ public class TruthTable {
 			return true;
 		}
 		return false;
+	}
+	
+	// Format input string by ignoring spaces.
+	private String formatString(String badString) {
+		String formatted = "";
+		
+		for (int i = 0; i < badString.length(); i++) {
+			char c = badString.charAt(i);
+			if (c != ' ') {
+				formatted += c;
+			}
+		}
+		
+		return formatted;
 	}
 	
 	private boolean hasValidCharacters(String expression) {
@@ -284,7 +298,7 @@ public class TruthTable {
 	}
 	
 	private void generateAllInputValues(boolean isTrueFirst) {
-		getVariables();
+		deterimineVariables();
 		// NOTE: Each string.size = N
 		// NOTE: Size of ArrayList inValues = 2^N
 		int n = variables.size();
